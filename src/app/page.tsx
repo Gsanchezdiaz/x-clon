@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+
+import { getSupabaseBrowserClient } from "../../lib/supabase/browser-client";
 
 const demos = [
   {
@@ -45,7 +49,9 @@ const demos = [
   },
 ] as const;
 
-export default function Home() {
+export default async function Home() {
+  const supabase = getSupabaseBrowserClient();
+  const { data: posts, error } = await supabase.from("posts").select();
   return (
     <div className="min-h-screen bg-linear-to-br from-[#02050b] via-[#050c1d] to-[#071426] text-slate-100">
       <div className="mx-auto flex w-full max-w-5xl flex-col gap-12 px-6 py-16">
@@ -68,7 +74,7 @@ export default function Home() {
               <Link
                 key={demo.href}
                 href={demo.href}
-                className={`group relative isolate flex flex-col overflow-hidden rounded-[32px] p-6 transition hover:-translate-y-1 ${
+                className={`group relative isolate flex flex-col overflow-hidden rounded-4xl p-6 transition hover:-translate-y-1 ${
                   theme?.card ??
                   "border border-white/5 bg-slate-900/60 shadow-[0_30px_70px_rgba(2,6,23,0.65)] hover:border-emerald-300/50"
                 }`}
@@ -111,6 +117,7 @@ export default function Home() {
             );
           })}
         </section>
+        <pre>{JSON.stringify(posts, null, 2)}</pre>
       </div>
     </div>
   );
